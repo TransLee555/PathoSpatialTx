@@ -309,4 +309,4 @@ if __name__ == "__main__":
     main()
 
 
-# python stage1_patch_extract.py --root /DATA/linzhiquan/lzq/jch_her2/wsi/ --output-dir /DATA/linzhiquan/lzq/PathoSpatialTx_GITHUB/ --patch-size 512 --level 1 --mask-max-pixels 2000000 --overlap-threshold 0.2 --skip-existing
+# python stage1_patch_extract.py --root .../wsi/ --output-dir .../PathoSpatialTx_GITHUB/ --patch-size 512 --level 1 --mask-max-pixels 2000000 --overlap-threshold 0.2 --skip-existing
