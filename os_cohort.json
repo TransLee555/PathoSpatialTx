@@ -1,0 +1,5 @@
+{
+  "output_dir": "./tmp_os_out",
+  "model_path": "./dummy_os_model.pt",
+  "cohorts": []
+}

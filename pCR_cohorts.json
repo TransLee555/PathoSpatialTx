@@ -1,0 +1,44 @@
+{
+    "model_path": "/path/to/mhglst_checkpoint.pt",
+    "output_dir": "/path/to/stage3_results",
+    "cohort_allowlist": ["CohortA", "CohortB"],
+    "cohorts": [
+      {
+        "name": "CohortA",
+        "processed_root": "/data/cohortA/processed_data_2.5",
+        "cell_root": "/data/cohortA/cell_output",
+        "gene_root": "/data/cohortA/pred",
+        "svs_root": "/data/cohortA/wsi",
+        "geojson_root": "/data/cohortA/cell_output",
+        "pos_level": 512,
+        "label": {
+          "file": "/data/cohortA/labels.xlsx",
+          "format": "excel",
+          "sheet_name": "Sheet1",
+          "patient_column": "patient_id",
+          "value_column": "pCR",
+          "positive_values": ["responder", "1", "yes"],
+          "value_mapping": {
+            "Responder": 1,
+            "NonResponder": 0,
+            "default": 0
+          }
+        }
+      },
+      {
+        "name": "CohortB",
+        "processed_root": "/data/cohortB/processed_data_2.5",
+        "cell_root": "/data/cohortB/cell_output",
+        "gene_root": "/data/cohortB/pred",
+        "svs_root": "/data/cohortB/wsi",
+        "geojson_root": "/data/cohortB/cell_output",
+        "pos_level": 1024,
+        "label": {
+          "file": "/data/cohortB/labels.csv",
+          "format": "csv",
+          "patient_column": "sample",
+          "value_column": "pCR"
+        }
+      }
+    ]
+  }
