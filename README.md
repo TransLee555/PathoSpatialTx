@@ -255,6 +255,7 @@ Run `Rscript <script> --help` for full option descriptions.
 
 ## Notes
 - Replace `/path/to/...` with actual locations for your data, checkpoints, and outputs.
+- Clone https://github.com/mahmoodlab/CONCH (for CONCH-based modules) and https://github.com/TIO-IKIM/CellViT (to export nuclei embeddings into `cell_output/`). Pretrained checkpoints used in Quick Start are already placed under ./checkpoints; regenerate them only if you want to retrain.
 - Protect HuggingFace tokens and any proprietary paths.
 - Adjust `--device`, `--batch-size`, worker counts, etc., according to available hardware.
 - Confirm OpenSlide libraries are available before enabling `--enable-wsi-overlays`.
