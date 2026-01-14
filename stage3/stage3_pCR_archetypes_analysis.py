@@ -1,10 +1,3 @@
-# analyze_archetypes.py (V10.10-fix1)  Functional-Spatial Integration Edition (final)
-# 
-#  - NEW: assign_prototypes_with_conf_dual(centers_tensor=...)
-#  - CHANGE:  model.shared_cluster_centers 
-#  - CHANGE: gene -bulk(mean of gene.x) +  pCR 
-#  - /DataLoader  torch_geometric  DataLoader
-
 import os, gc, re, types, json, warnings, shutil, argparse, logging
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
