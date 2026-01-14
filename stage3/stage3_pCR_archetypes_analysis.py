@@ -1,10 +1,3 @@
-# analyze_archetypes.py (V10.10-fix1) — Functional-Spatial Integration Edition (final)
-# 关键修复：
-#  - NEW: assign_prototypes_with_conf_dual(centers_tensor=...)，全流程用它打原型与置信度
-#  - CHANGE: 去掉对 model.shared_cluster_centers 的依赖，改为外显传入中心
-#  - CHANGE: gene 功能分析改用“样本级伪-bulk(mean of gene.x) + 按原型子集做 pCR 差异”
-#  - 修补：补齐所有缺失函数/变量，给出健壮兜底；DataLoader 使用 torch_geometric 的 DataLoader
-
 import os, gc, re, types, json, warnings, shutil, argparse, logging
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
