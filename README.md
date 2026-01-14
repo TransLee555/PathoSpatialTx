@@ -120,6 +120,10 @@ python stage1_IRSVGs_predictor.py \
 
 ## Stage 2 - Cell-Level Graph + Survival/pCR Models
 
+### 2.0 CellViT Features
+
+CellViT-based nuclei embeddings are generated with the public repo https://github.com/TIO-IKIM/CellViT. Clone that project, export embeddings into `--cell-output-dir`, and reuse them for Stage 2/3 scripts. Exported features must be written to `--cell-output-dir` so that Stage 2 training and inference scripts can reuse them.
+
 ### 2.1 Cell Feature Extraction
 ```bash
 python stage2_cell_feature_extract.py \
@@ -254,3 +258,5 @@ Run `Rscript <script> --help` for full option descriptions.
 - Protect HuggingFace tokens and any proprietary paths.
 - Adjust `--device`, `--batch-size`, worker counts, etc., according to available hardware.
 - Confirm OpenSlide libraries are available before enabling `--enable-wsi-overlays`.
+
+---
