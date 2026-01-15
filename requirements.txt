@@ -1,0 +1,4 @@
+scikit-learn
+pandas
+numpy
+# Exclude CUDA-torch wheel as it must not be runtime-hardcoded
