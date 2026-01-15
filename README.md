@@ -1,18 +1,29 @@
 # PathoSpatialTx Pipeline Overview
 
+This repository provides the end-to-end implementation of **PathoSpatialTx**, a three-stage framework for decoding prognostic spatial archetypes of the tumor microenvironment from breast cancer histopathology.
+
+The pipeline includes:
+- **Stage 1**: Patch-level **IR-SVG / immune-program inference** from H&E
+- **Stage 2**: Cell-level cross-modal graph construction and **pCR / OS prediction**
+- **Stage 3**: Archetype visualization, ecological interpretation, and **cross-modal validation** (scRNA/bulk)
+
+---
+
 ## 0. Environment Setup
+
+### Create a conda environment
 ```bash
 conda create -n PST python=3.9 -y
 conda activate PST
 ```
 
-Install PyTorch (example for CUDA 11.6):
+### Install PyTorch (example for CUDA 11.6)
 ```bash
 pip install torch==1.13.0+cu116 torchvision==0.14.0+cu116 torchaudio==0.13.0 \
-  --extra-index-url https://download.pytorch.org/whl/cu116
+  --extra-index-url [https://download.pytorch.org/whl/cu116](https://download.pytorch.org/whl/cu116)
 ```
 
-Install additional packages:
+### Install additional packages
 ```bash
 pip install \
   opencv-python==4.12.0.88 \
@@ -26,16 +37,41 @@ pip install \
   pandas==2.2.2 \
   scikit-learn==1.5.2
 ```
-Install `openslide-bin` from conda-forge if needed:
+
+### Install openslide-bin (if needed)
 ```bash
 conda install -c conda-forge openslide-bin
 ```
 
+---
+
+## Model Checkpoints (Zenodo)
+
+Pretrained PathoSpatialTx checkpoints are hosted on Zenodo (to avoid storing large files in GitHub):
+
+**DOI:** [https://doi.org/10.5281/zenodo.18253119](https://doi.org/10.5281/zenodo.18253119)
+
+Download the following files from the Zenodo record and place them under `./checkpoints/`:
+- `stage1_IRSVGs_predictor.pth`
+- `stage2_pCR_predict.pt`
+- `stage2_os_predict.pth`
+
+**Expected directory layout:**
+```text
+checkpoints/
+  stage1_IRSVGs_predictor.pth
+  stage2_pCR_predict.pt
+  stage2_os_predict.pth
+```
+
+---
+
 ## Quick Start
 
-Minimal example commands using the checkpoints in `./checkpoints`:
+Minimal example commands using pretrained checkpoints (downloaded from Zenodo into `./checkpoints/`):
+
+### Stage 1 inference with pretrained IR-SVG predictor
 ```bash
-# Stage1 inference with pretrained IR-SVG predictor
 python stage1_IRSVGs_predictor.py \
   --patch-root /path/to/patch_output \
   --output-dir /path/to/gene_pred_csv \
@@ -46,8 +82,10 @@ python stage1_IRSVGs_predictor.py \
   --batch-size 1 --device cuda:0 \
   --hf-token <HF_TOKEN> \
   --progress
+```
 
-# Stage2 OS prediction with pretrained checkpoint
+### Stage 2 OS prediction with pretrained checkpoint
+```bash
 python stage2_os_predict.py \
   --root-dir /path/to/os/processed_data \
   --cell-output-dir /path/to/cell_output \
@@ -56,8 +94,10 @@ python stage2_os_predict.py \
   --checkpoint ./checkpoints/stage2_os_predict.pth \
   --batch-size 1 --num-workers 4 \
   --prediction-output /path/to/predictions/os_predictions.csv
+```
 
-# Stage2 pCR prediction with pretrained checkpoint
+### Stage 2 pCR prediction with pretrained checkpoint
+```bash
 python stage2_pCR_predict.py \
   --root-dir /path/to/pcr_processed \
   --cell-output-dir /path/to/cell_output \
@@ -69,7 +109,7 @@ python stage2_pCR_predict.py \
 
 ---
 
-## Stage 1 - Patch-Level IR-SVG Pipeline
+## Stage 1 — Patch-Level IR-SVG Pipeline
 
 ### 1.1 Patch Extraction
 ```bash
@@ -118,11 +158,13 @@ python stage1_IRSVGs_predictor.py \
 
 ---
 
-## Stage 2 - Cell-Level Graph + Survival/pCR Models
+## Stage 2 — Cell-Level Graph + Survival / pCR Models
 
 ### 2.0 CellViT Features
+CellViT-based nuclei embeddings are generated with the public repo:  
+[https://github.com/TIO-IKIM/CellViT](https://github.com/TIO-IKIM/CellViT)
 
-CellViT-based nuclei embeddings are generated with the public repo https://github.com/TIO-IKIM/CellViT. Clone that project, export embeddings into `--cell-output-dir`, and reuse them for Stage 2/3 scripts. Exported features must be written to `--cell-output-dir` so that Stage 2 training and inference scripts can reuse them.
+Clone that project, export embeddings into `--cell-output-dir`, and reuse them for Stage 2/3 scripts. Exported features must be written to `--cell-output-dir` so that Stage 2 training and inference scripts can reuse them.
 
 ### 2.1 Cell Feature Extraction
 ```bash
@@ -199,7 +241,7 @@ python stage2_pCR_predict.py \
 
 ---
 
-## Stage 3 - Archetype Analysis & Validation
+## Stage 3 — Archetype Analysis & Validation
 
 ### 3.0 Archetype Analysis
 
@@ -225,18 +267,18 @@ python stage3_pCR_archetypes_analysis.py \
   --enable-gene-sets
 ```
 
-### 3.1 Cross-Modal Validation (scRNA/Bulk)
+### 3.1 Cross-Modal Validation (scRNA / Bulk)
 
-**Signature Mapping**
+**Signature Mapping:**
 ```bash
 Rscript stage3_OS_sc_archetypes_mapping.R \
   --analysis-root /path/to/stage3_os_run \
   --gene-mapping /path/to/gene_ensembl_ids.txt \
   --cell-counts-csv /path/to/archetype_celltype_counts_raw.csv
 ```
-Use `stage3_pCR_sc_archetypes_mapping.R` for the pCR pipeline.
+*Use `stage3_pCR_sc_archetypes_mapping.R` for the pCR pipeline.*
 
-**Full scRNA + Bulk Workflow**
+**Full scRNA + Bulk Workflow:**
 ```bash
 Rscript stage3_OS_sc_archetypes_workflow.R \
   --base-path /path/to/stage3_os_run \
@@ -247,17 +289,19 @@ Rscript stage3_OS_sc_archetypes_workflow.R \
   --proto-signature /path/to/interface_core_signature_means.csv \
   --prior-comp /path/to/cell_prototype_composition.csv
 ```
-`stage3_pCR_sc_archetypes_workflow.R` is analogous.
+*`stage3_pCR_sc_archetypes_workflow.R` is analogous.*
 
 Run `Rscript <script> --help` for full option descriptions.
 
 ---
 
 ## Notes
+
 - Replace `/path/to/...` with actual locations for your data, checkpoints, and outputs.
-- Clone https://github.com/mahmoodlab/CONCH (for CONCH-based modules) and https://github.com/TIO-IKIM/CellViT (to export nuclei embeddings into `cell_output/`). Pretrained checkpoints used in Quick Start are already placed under ./checkpoints; regenerate them only if you want to retrain.
+- Pretrained checkpoints used in Quick Start are hosted on Zenodo (DOI: [https://doi.org/10.5281/zenodo.18253119](https://doi.org/10.5281/zenodo.18253119)). Download them and place under `./checkpoints/` before running inference.
+- Clone and follow the original instructions/licenses for external dependencies:
+  - **CONCH**: [https://github.com/mahmoodlab/CONCH](https://github.com/mahmoodlab/CONCH)
+  - **CellViT**: [https://github.com/TIO-IKIM/CellViT](https://github.com/TIO-IKIM/CellViT)
 - Protect HuggingFace tokens and any proprietary paths.
 - Adjust `--device`, `--batch-size`, worker counts, etc., according to available hardware.
 - Confirm OpenSlide libraries are available before enabling `--enable-wsi-overlays`.
-
----
